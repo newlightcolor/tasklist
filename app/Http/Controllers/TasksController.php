@@ -14,7 +14,7 @@ class TasksController extends Controller
         $tasks = Task::all(); //変数$tasksにTaskﾃｰﾌﾞﾙのﾚｺｰﾄﾞを代入する。
         
         
-        // 第2引数の'tasks'がtasks.indexに飛ばされる、その先では$tasksと書くのでここの$tasksとは別
+        // 第2引数の'tasks'がtasks.indexに飛ばされる、その先では"$tasks"と書くがここの"$tasks"ではなく'tasks'に$が付いたもの
         return view('tasks.index', ['tasks' => $tasks,]);
         // 変数1に表示したいViewを指定、変数2では指定したViewに渡すデータを指定している
     }
@@ -40,6 +40,7 @@ class TasksController extends Controller
         $task->content = $request->content;
         $task->save();
         
+        // redirect ｺﾝﾄﾛｰﾗｰからｺﾝﾄﾛｰﾗｰへ
         return redirect('/');
     }
 
