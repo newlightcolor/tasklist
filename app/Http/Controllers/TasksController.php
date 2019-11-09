@@ -58,6 +58,7 @@ class TasksController extends Controller
         $task = Task::find($id);
         
         return view('tasks.edit', ['task' => $task,]);
+        
     }
 
     // putまたはpatchでtasks/idにアクセスされた場合の「更新処理」
