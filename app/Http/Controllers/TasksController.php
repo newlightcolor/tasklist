@@ -11,12 +11,21 @@ class TasksController extends Controller
     // getでtasks/にアクセスされた場合の「一覧表示処理」
     public function index()
     {
-        $tasks = Task::all(); //変数$tasksにTaskﾃｰﾌﾞﾙのﾚｺｰﾄﾞを代入する。
+        $data = [];
+        if (\Auth::check()) {
+            $user = \Auth::user();
+            $tasks = $user->tasks()->orderBy('created_at', 'desc')->paginate(10);
+            
+            $data = ['user' => $user, 'tasks' => $tasks,];
+            }
+            
+            return view('welcome', $data);
         
-        
-        // 第2引数の'tasks'がtasks.indexに飛ばされる、その先では"$tasks"と書くがここの"$tasks"ではなく'tasks'に$が付いたもの
-        return view('tasks.index', ['tasks' => $tasks,]);
-        // 変数1に表示したいViewを指定、変数2では指定したViewに渡すデータを指定している
+        // 旧コード
+        //$tasks = Task::all(); // --comment 変数$tasksにTaskﾃｰﾌﾞﾙのﾚｺｰﾄﾞを代入する。
+        // --comment 第2引数の'tasks'がtasks.indexに飛ばされる、その先では"$tasks"と書くがここの"$tasks"ではなく'tasks'に$が付いたもの
+        //return view('tasks.index', ['tasks' => $tasks,]);
+        // --comment 変数1に表示したいViewを指定、変数2では指定したViewに渡すデータを指定している
     }
 
     // getでtasks/createにアクセスされた場合の「新規登録画面処理」
@@ -31,14 +40,14 @@ class TasksController extends Controller
     public function store(Request $request)
     {
         $this->validate($request, [
-                'status' => 'required|max:10',
                 'content' => 'required|max:191',
             ]);
         
-        $task = new Task;
-        $task->status = $request->status;
-        $task->content = $request->content;
-        $task->save();
+        $request->user()->tasks()->create([
+            'content' => $request->content,
+            'status' => $request->status,
+        ]);
+
         
         // redirect ｺﾝﾄﾛｰﾗｰからｺﾝﾄﾛｰﾗｰへ
         return redirect('/');

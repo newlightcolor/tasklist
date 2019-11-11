@@ -2,7 +2,15 @@
 
 @section('content')
     @if (Auth::check())
-        {{ Auth::user()->name }}<p>でログイン中です。</p>
+
+        <h1>タスク一覧</h1>
+
+        @if (count($tasks) > 0)
+            @include('tasks.tasks', ['tasks' => $tasks])
+        @endif
+    
+        {!! link_to_route('tasks.create', '新規タスクの追加', [], ['class' => 'btn btn-primary']) !!}
+    
     @else
         <div class="center jumbotron">
             <div class="text-center">
@@ -12,4 +20,5 @@
             </div>
         </div>
     @endif
+        
 @endsection
